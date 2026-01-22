@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>랜덤 자리 배치 프로그램</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #c5cae9 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .header-icon {
+            width: 32px;
+            height: 32px;
+            background: #2196f3;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .control-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .section-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .students-icon { background: #4caf50; }
+        .settings-icon { background: #ff9800; }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #2196f3;
+        }
+
+        .info-box {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #2196f3;
+            margin-top: 15px;
+        }
+
+        .student-count {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2196f3;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-primary {
+            background: #2196f3;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-secondary {
+            background: #757575;
+            color: white;
+        }
+
+        .seating-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .seating-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .status {
+            font-size: 14px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 15px;
+        }
+
+        .status-assigned {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-waiting {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .blackboard {
+            background: #2d5016;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .seating-grid {
+            display: grid;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .seat {
+            width: 64px;
+            height: 64px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .seat.occupied {
+            background: #e3f2fd;
+            border-color: #2196f3;
+            color: #1976d2;
+        }
+
+        .seat.empty {
+            background: white;
+            color: #999;
+        }
+
+        .tip {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        .icon {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-card">
+            <div class="header">
+                <div class="header-icon">📋</div>
+                <h1>랜덤 자리 배치 프로그램</h1>
+            </div>
+
+            <div class="controls">
+                <!-- 학생 수 설정 -->
+                <div class="control-section">
+                    <div class="section-title">
+                        <div class="section-icon students-icon">👥</div>
+                        학생 수 설정
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="totalStudents">총 학생 수</label>
+                        <input type="number" id="totalStudents" min="1" max="50" value="30">
+                    </div>
+
+                    <div class="info-box">
+                        <div style="color: #666; font-size: 14px; margin-bottom: 5px;">
+                            학생 번호: 1번 ~ <span id="maxStudentNum">30</span>번
+                        </div>
+                        <div class="student-count">
+                            총 <span id="studentCount">30</span>명
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 교실 설정 -->
+                <div class="control-section">
+                    <div class="section-title">
+                        <div class="section-icon settings-icon">⚙️</div>
+                        교실 설정
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div class="input-group">
+                            <label for="rows">좌석 가로줄 수</label>
+                            <input type="number" id="rows" min="1" max="10" value="6">
+                        </div>
+                        <div class="input-group">
+                            <label for="cols">좌석 세로줄 수</label>
+                            <input type="number" id="cols" min="1" max="10" value="6">
+                        </div>
+                    </div>
+
+                    <div style="color: #666; font-size: 14px; margin-bottom: 15px;">
+                        총 좌석 수: <span id="totalSeats">36</span>개
+                    </div>
+
+                    <div class="button-group">
+                        <button class="btn btn-primary" id="shuffleBtn">
+                            🔀 자리 배치
+                        </button>
+                        <button class="btn btn-secondary" id="clearBtn">
+                            초기화
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 좌석표 -->
+            <div class="seating-section">
+                <div class="seating-header">
+                    <div class="section-title">
+                        <div class="section-icon" style="background: #9c27b0;">🪑</div>
+                        좌석표
+                    </div>
+                    <div class="status status-waiting" id="status">
+                        ⏳ 배치 대기
+                    </div>
+                </div>
+
+                <div class="blackboard">칠판</div>
+                
+                <div class="seating-grid" id="seatingGrid">
+                    <!-- 좌석들이 여기에 동적으로 생성됩니다 -->
+                </div>
+
+                <div class="tip" id="tip" style="display: none;">
+                    "자리 배치" 버튼을 여러 번 클릭하면 다른 배치를 확인할 수 있습니다
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ClassroomSeating {
+            constructor() {
+                this.totalStudents = 30;
+                this.rows = 6;
+                this.cols = 6;
+                this.seatingChart = [];
+                this.isAssigned = false;
+
+                this.initElements();
+                this.bindEvents();
+                this.updateDisplay();
+                this.initSeatingChart();
+            }
+
+            initElements() {
+                this.totalStudentsInput = document.getElementById('totalStudents');
+                this.rowsInput = document.getElementById('rows');
+                this.colsInput = document.getElementById('cols');
+                this.shuffleBtn = document.getElementById('shuffleBtn');
+                this.clearBtn = document.getElementById('clearBtn');
+                this.seatingGrid = document.getElementById('seatingGrid');
+                this.status = document.getElementById('status');
+                this.tip = document.getElementById('tip');
+                this.studentCount = document.getElementById('studentCount');
+                this.maxStudentNum = document.getElementById('maxStudentNum');
+                this.totalSeats = document.getElementById('totalSeats');
+            }
+
+            bindEvents() {
+                this.totalStudentsInput.addEventListener('input', () => {
+                    this.totalStudents = parseInt(this.totalStudentsInput.value) || 1;
+                    this.updateDisplay();
+                    this.clearSeats();
+                });
+
+                this.rowsInput.addEventListener('input', () => {
+                    this.rows = parseInt(this.rowsInput.value) || 1;
+                    this.updateDisplay();
+                    this.initSeatingChart();
+                });
+
+                this.colsInput.addEventListener('input', () => {
+                    this.cols = parseInt(this.colsInput.value) || 1;
+                    this.updateDisplay();
+                    this.initSeatingChart();
+                });
+
+                this.shuffleBtn.addEventListener('click', () => this.shuffleSeats());
+                this.clearBtn.addEventListener('click', () => this.clearSeats());
+            }
+
+            updateDisplay() {
+                this.studentCount.textContent = this.totalStudents;
+                this.maxStudentNum.textContent = this.totalStudents;
+                this.totalSeats.textContent = this.rows * this.cols;
+                
+                this.shuffleBtn.disabled = this.totalStudents === 0;
+            }
+
+            initSeatingChart() {
+                this.seatingChart = Array(this.rows).fill(null).map(() => Array(this.cols).fill(null));
+                this.renderSeatingChart();
+                this.isAssigned = false;
+                this.updateStatus();
+            }
+
+            getStudentNumbers() {
+                return Array.from({ length: this.totalStudents }, (_, i) => i + 1);
+            }
+
+            shuffleSeats() {
+                const totalSeats = this.rows * this.cols;
+                const studentNumbers = this.getStudentNumbers();
+                
+                if (this.totalStudents > totalSeats) {
+                    alert(`학생 수(${this.totalStudents}명)가 좌석 수(${totalSeats}개)보다 많습니다!`);
+                    return;
+                }
+
+                // 모든 좌석 위치 생성
+                const allPositions = [];
+                for (let r = 0; r < this.rows; r++) {
+                    for (let c = 0; c < this.cols; c++) {
+                        allPositions.push({ row: r, col: c });
+                    }
+                }
+
+                // Fisher-Yates 알고리즘으로 랜덤 섞기
+                const shuffledPositions = [...allPositions];
+                for (let i = shuffledPositions.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffledPositions[i], shuffledPositions[j]] = [shuffledPositions[j], shuffledPositions[i]];
+                }
+
+                // 새로운 좌석표 생성
+                this.seatingChart = Array(this.rows).fill(null).map(() => Array(this.cols).fill(null));
+                
+                // 학생 번호들을 랜덤 위치에 배치
+                studentNumbers.forEach((studentNum, index) => {
+                    const position = shuffledPositions[index];
+                    this.seatingChart[position.row][position.col] = studentNum;
+                });
+
+                this.isAssigned = true;
+                this.renderSeatingChart();
+                this.updateStatus();
+            }
+
+            clearSeats() {
+                this.seatingChart = Array(this.rows).fill(null).map(() => Array(this.cols).fill(null));
+                this.isAssigned = false;
+                this.renderSeatingChart();
+                this.updateStatus();
+            }
+
+            renderSeatingChart() {
+                this.seatingGrid.style.gridTemplateColumns = `repeat(${this.cols}, 1fr)`;
+                this.seatingGrid.innerHTML = '';
+
+                this.seatingChart.forEach((row, rowIndex) => {
+                    row.forEach((studentNumber, colIndex) => {
+                        const seat = document.createElement('div');
+                        seat.className = `seat ${studentNumber ? 'occupied' : 'empty'}`;
+                        seat.textContent = studentNumber ? `${studentNumber}번` : `${rowIndex + 1}-${colIndex + 1}`;
+                        this.seatingGrid.appendChild(seat);
+                    });
+                });
+            }
+
+            updateStatus() {
+                if (this.isAssigned) {
+                    this.status.className = 'status status-assigned';
+                    this.status.textContent = '✅ 배치 완료';
+                    this.tip.style.display = this.totalStudents > 0 ? 'block' : 'none';
+                } else {
+                    this.status.className = 'status status-waiting';
+                    this.status.textContent = '⏳ 배치 대기';
+                    this.tip.style.display = 'none';
+                }
+            }
+        }
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            new ClassroomSeating();
+        });
+    </script>
+</body>
+</html>
