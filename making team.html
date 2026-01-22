@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>조 짜기 프로그램</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            padding: 40px;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .icon {
+            width: 24px;
+            height: 24px;
+            fill: #4facfe;
+        }
+        
+        .input-method-selector {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 25px;
+        }
+        
+        .method-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.3s;
+        }
+        
+        .method-btn.active {
+            background: #4facfe;
+            color: white;
+            box-shadow: 0 2px 8px rgba(79, 172, 254, 0.3);
+        }
+        
+        .input-section-content {
+            display: none;
+        }
+        
+        .input-section-content.active {
+            display: block;
+        }
+        
+        .number-input-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .number-input-section h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.2rem;
+        }
+        
+        .number-input-large {
+            width: 120px;
+            height: 60px;
+            font-size: 24px;
+            text-align: center;
+            border: 3px solid #e1e5e9;
+            border-radius: 12px;
+            background: white;
+            color: #333;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .number-input-large:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 4px rgba(79, 172, 254, 0.1);
+        }
+        
+        .exclude-section {
+            margin-top: 25px;
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .exclude-section h4 {
+            margin-bottom: 15px;
+            color: #856404;
+            font-size: 1.1rem;
+        }
+        
+        .exclude-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ffeaa7;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            background: white;
+        }
+        
+        .exclude-input:focus {
+            outline: none;
+            border-color: #f39c12;
+            box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
+        }
+        
+        .exclude-help {
+            font-size: 13px;
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .exclude-preview {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ffeaa7;
+            min-height: 40px;
+            font-size: 14px;
+        }
+        
+        .exclude-number {
+            display: inline-block;
+            background: #ff6b6b;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            margin: 2px;
+            font-size: 12px;
+        }
+        
+        .participant-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        .participant-input input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .participant-input input:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+        
+        .btn-remove {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+        
+        .btn-remove:hover {
+            background: #ff5252;
+        }
+        
+        .btn-add {
+            background: #4facfe;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-top: 15px;
+        }
+        
+        .btn-add:hover {
+            background: #3a8bfd;
+        }
+        
+        .settings {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .settings h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .radio-group {
+            margin-bottom: 15px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .radio-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .number-input {
+            margin-left: 26px;
+            margin-top: 8px;
+            width: 80px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn-primary {
+            background: #4facfe;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background: #3a8bfd;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        .results {
+            min-height: 400px;
+        }
+        
+        .empty-state {
+            background: #f8f9fa;
+            padding: 60px 20px;
+            border-radius: 12px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 18px;
+        }
+        
+        .team-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #1976d2;
+            font-weight: 500;
+        }
+        
+        .team {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            color: white;
+            box-shadow: 0 5px 15px rgba(240, 147, 251, 0.3);
+        }
+        
+        .team:nth-child(even) {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+        }
+        
+        .team:nth-child(3n) {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            box-shadow: 0 5px 15px rgba(67, 233, 123, 0.3);
+        }
+        
+        .team:nth-child(4n) {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            box-shadow: 0 5px 15px rgba(250, 112, 154, 0.3);
+        }
+        
+        .team h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .members {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .member {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .btn-reshuffle {
+            width: 100%;
+            background: transparent;
+            color: #4facfe;
+            border: 2px solid #4facfe;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        
+        .btn-reshuffle:hover {
+            background: #4facfe;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .input-method-selector {
+                flex-direction: column;
+            }
+            
+            .method-btn {
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>조 짜기 프로그램</h1>
+            <p>학생 수를 입력하거나 직접 명단을 작성하여 자동으로 조를 나누어보세요</p>
+        </div>
+        
+        <div class="main-content">
+            <!-- 참가자 입력 섹션 -->
+            <div class="input-section">
+                <div class="section-title">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zM4 18v-4.8c0-2.63 1.57-4.98 4-5.95V6c0-1.1.9-2 2-2s2 .9 2 2v1.25c2.43.97 4 3.32 4 5.95V18h2v2H2v-2h2zm4.5-3.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5z"></path>
+                    </svg>
+                    <h2>학생 수 설정</h2>
+                </div>
+                
+                <div class="input-method-selector">
+                    <button class="method-btn active" onclick="switchInputMethod('number')">인원수로 입력</button>
+                    <button class="method-btn" onclick="switchInputMethod('names')">이름 직접 입력</button>
+                </div>
+                
+                <!-- 숫자 입력 방식 -->
+                <div id="number-input" class="input-section-content active">
+                    <div class="number-input-section">
+                        <h3>총 학생 수를 입력하세요</h3>
+                        <input type="number" id="participant-count" class="number-input-large" value="20" min="1" max="999">
+                        <p style="margin-top: 15px; color: #666; font-size: 14px;">학생들은 번호로 표시됩니다</p>
+                    </div>
+                    
+                    <!-- 제외할 번호 입력 섹션 -->
+                    <div class="exclude-section">
+                        <h4>🚫 제외할 학생 번호</h4>
+                        <div class="exclude-help">
+                            제외할 학생들의 번호를 입력하세요. (예: 1, 3, 5, 10-15)
+                        </div>
+                        <input type="text" id="exclude-numbers" class="exclude-input" 
+                               placeholder="예: 1, 3, 5, 10-15" 
+                               oninput="updateExcludePreview()">
+                        <div class="exclude-help">
+                            미리보기:
+                        </div>
+                        <div id="exclude-preview" class="exclude-preview">
+                            제외할 번호를 입력하면 여기에 표시됩니다.
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 이름 직접 입력 방식 -->
+                <div id="names-input" class="input-section-content">
+                    <div id="participants-list">
+                        <div class="participant-input">
+                            <input type="text" placeholder="참가자 1" class="participant-name">
+                        </div>
+                    </div>
+                    
+                    <button class="btn-add" onclick="addParticipant()">
+                        <span>+</span> 학생 추가
+                    </button>
+                </div>
+                
+                <div class="settings">
+                    <h3>조 나누기 설정</h3>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="by-count" name="method" value="by-count" checked>
+                            <label for="by-count">조 개수로 나누기</label>
+                        </div>
+                        <input type="number" id="team-count" class="number-input" value="4" min="1">
+                        
+                        <div class="radio-option">
+                            <input type="radio" id="by-size" name="method" value="by-size">
+                            <label for="by-size">조당 인원수로 나누기</label>
+                        </div>
+                        <input type="number" id="team-size" class="number-input" value="5" min="1" style="display:none;">
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-primary" onclick="createTeams()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"></path>
+                        </svg>
+                        조 짜기
+                    </button>
+                    <button class="btn-secondary" onclick="resetAll()">초기화</button>
+                </div>
+            </div>
+            
+            <!-- 결과 표시 섹션 -->
+            <div class="results">
+                <div class="section-title">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"></path>
+                    </svg>
+                    <h2>조 편성 결과</h2>
+                </div>
+                
+                <div id="teams-result">
+                    <div class="empty-state">
+                        학생 수를 입력하고 조 짜기 버튼을 눌러보세요!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let participantCount = 1;
+        let currentInputMethod = 'number';
+        
+        // 입력 방식 전환
+        function switchInputMethod(method) {
+            currentInputMethod = method;
+            
+            // 버튼 활성화 상태 변경
+            document.querySelectorAll('.method-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 입력 섹션 표시/숨기기
+            document.querySelectorAll('.input-section-content').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            if (method === 'number') {
+                document.getElementById('number-input').classList.add('active');
+            } else {
+                document.getElementById('names-input').classList.add('active');
+            }
+        }
+        
+        // 제외 번호 파싱 함수
+        function parseExcludeNumbers(input) {
+            if (!input) return [];
+            
+            const numbers = new Set();
+            const parts = input.split(',');
+            
+            for (let part of parts) {
+                part = part.trim();
+                if (!part) continue;
+                
+                if (part.includes('-')) {
+                    // 범위 처리 (예: 10-15)
+                    const [start, end] = part.split('-').map(n => parseInt(n.trim()));
+                    if (!isNaN(start) && !isNaN(end)) {
+                        for (let i = Math.min(start, end); i <= Math.max(start, end); i++) {
+                            numbers.add(i);
+                        }
+                    }
+                } else {
+                    // 단일 숫자 처리
+                    const num = parseInt(part);
+                    if (!isNaN(num)) {
+                        numbers.add(num);
+                    }
+                }
+            }
+            
+            return Array.from(numbers).sort((a, b) => a - b);
+        }
+        
+        // 제외 번호 미리보기 업데이트
+        function updateExcludePreview() {
+            const input = document.getElementById('exclude-numbers').value;
+            const preview = document.getElementById('exclude-preview');
+            const excludeNumbers = parseExcludeNumbers(input);
+            
+            if (excludeNumbers.length === 0) {
+                preview.innerHTML = '제외할 번호를 입력하면 여기에 표시됩니다.';
+                preview.style.color = '#856404';
+            } else {
+                preview.innerHTML = excludeNumbers.map(num => 
+                    `<span class="exclude-number">${num}번</span>`
+                ).join('');
+                preview.style.color = '#721c24';
+            }
+        }
+        
+        // 라디오 버튼 변경 이벤트
+        document.querySelectorAll('input[name="method"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const teamCount = document.getElementById('team-count');
+                const teamSize = document.getElementById('team-size');
+                
+                if (this.value === 'by-count') {
+                    teamCount.style.display = 'block';
+                    teamSize.style.display = 'none';
+                } else {
+                    teamCount.style.display = 'none';
+                    teamSize.style.display = 'block';
+                }
+            });
+        });
+        
+        function addParticipant() {
+            participantCount++;
+            const participantsList = document.getElementById('participants-list');
+            
+            const div = document.createElement('div');
+            div.className = 'participant-input';
+            div.innerHTML = `
+                <input type="text" placeholder="참가자 ${participantCount}" class="participant-name">
+                <button class="btn-remove" onclick="removeParticipant(this)">삭제</button>
+            `;
+            
+            participantsList.appendChild(div);
+        }
+        
+        function removeParticipant(button) {
+            const participantsList = document.getElementById('participants-list');
+            if (participantsList.children.length > 1) {
+                button.parentElement.remove();
+            }
+        }
+        
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+        
+        function getParticipants() {
+            if (currentInputMethod === 'number') {
+                const count = parseInt(document.getElementById('participant-count').value) || 0;
+                if (count === 0) {
+                    return [];
+                }
+                
+                // 모든 번호 생성
+                let allNumbers = Array.from({length: count}, (_, i) => i + 1);
+                
+                // 제외할 번호 가져오기
+                const excludeInput = document.getElementById('exclude-numbers').value;
+                const excludeNumbers = parseExcludeNumbers(excludeInput);
+                
+                // 제외할 번호 필터링
+                const participants = allNumbers
+                    .filter(num => !excludeNumbers.includes(num))
+                    .map(num => `${num}번`);
+                
+                return participants;
+            } else {
+                const participantInputs = document.querySelectorAll('.participant-name');
+                return Array.from(participantInputs)
+                    .map(input => input.value.trim())
+                    .filter(name => name !== '');
+            }
+        }
+        
+        function createTeams() {
+            const participants = getParticipants();
+            
+            if (participants.length === 0) {
+                if (currentInputMethod === 'number') {
+                    alert('참가자 수를 입력해주세요.');
+                } else {
+                    alert('참가자를 입력해주세요.');
+                }
+                return;
+            }
+            
+            if (participants.length < 2) {
+                alert('조를 나누려면 최소 2명 이상이 필요합니다.');
+                return;
+            }
+            
+            const method = document.querySelector('input[name="method"]:checked').value;
+            const teamCount = parseInt(document.getElementById('team-count').value) || 2;
+            const teamSize = parseInt(document.getElementById('team-size').value) || 3;
+            
+            const shuffledParticipants = shuffleArray(participants);
+            const teams = [];
+            
+            if (method === 'by-count') {
+                const actualTeamCount = Math.min(teamCount, participants.length);
+                const baseSize = Math.floor(participants.length / actualTeamCount);
+                const remainder = participants.length % actualTeamCount;
+                
+                let currentIndex = 0;
+                for (let i = 0; i < actualTeamCount; i++) {
+                    const currentTeamSize = baseSize + (i < remainder ? 1 : 0);
+                    teams.push(shuffledParticipants.slice(currentIndex, currentIndex + currentTeamSize));
+                    currentIndex += currentTeamSize;
+                }
+            } else {
+                for (let i = 0; i < participants.length; i += teamSize) {
+                    teams.push(shuffledParticipants.slice(i, i + teamSize));
+                }
+            }
+            
+            // 제외된 학생 정보 표시
+            let excludeInfo = '';
+            if (currentInputMethod === 'number') {
+                const totalCount = parseInt(document.getElementById('participant-count').value) || 0;
+                const excludeInput = document.getElementById('exclude-numbers').value;
+                const excludeNumbers = parseExcludeNumbers(excludeInput);
+                
+                if (excludeNumbers.length > 0) {
+                    excludeInfo = `(제외된 학생: ${excludeNumbers.map(n => n + '번').join(', ')})`;
+                }
+            }
+            
+            displayTeams(teams, participants.length, excludeInfo);
+        }
+        
+        function displayTeams(teams, totalParticipants, excludeInfo = '') {
+            const result = document.getElementById('teams-result');
+            
+            let html = `
+                <div class="team-info">
+                    총 ${totalParticipants}명이 ${teams.length}개 조로 나뉘었습니다. ${excludeInfo}
+                </div>
+            `;
+            
+            teams.forEach((team, index) => {
+                html += `
+                    <div class="team">
+                        <h3>${index + 1}조 (${team.length}명)</h3>
+                        <div class="members">
+                            ${team.map(member => `<span class="member">${member}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '<button class="btn-reshuffle" onclick="createTeams()">다시 섞기</button>';
+            
+            result.innerHTML = html;
+        }
+        
+        function resetAll() {
+            // 참가자 목록 초기화
+            const participantsList = document.getElementById('participants-list');
+            participantsList.innerHTML = `
+                <div class="participant-input">
+                    <input type="text" placeholder="참가자 1" class="participant-name">
+                </div>
+            `;
+            participantCount = 1;
+            
+            // 참가자 수 초기화
+            document.getElementById('participant-count').value = 20;
+            
+            // 제외 번호 초기화
+            document.getElementById('exclude-numbers').value = '';
+            updateExcludePreview();
+            
+            // 결과 초기화
+            document.getElementById('teams-result').innerHTML = `
+                <div class="empty-state">
+                    참가자 수를 입력하고 조 짜기 버튼을 눌러보세요!
+                </div>
+            `;
+            
+            // 설정 초기화
+            document.getElementById('by-count').checked = true;
+            document.getElementById('team-count').value = 4;
+            document.getElementById('team-size').value = 5;
+            document.getElementById('team-count').style.display = 'block';
+            document.getElementById('team-size').style.display = 'none';
+            
+            // 입력 방식 초기화
+            currentInputMethod = 'number';
+            document.querySelectorAll('.method-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector('.method-btn').classList.add('active');
+            
+            document.querySelectorAll('.input-section-content').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById('number-input').classList.add('active');
+        }
+    </script>
+
+</body></html>
