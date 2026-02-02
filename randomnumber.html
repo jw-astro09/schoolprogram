@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>랜덤 번호 추출기</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+        h2 { color: #333; }
+        .inputs {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 80px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover { background-color: #0056b3; }
+        #result {
+            margin-top: 25px;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #007bff;
+            min-height: 4rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>번호 뽑기</h2>
+    <div class="inputs">
+        <input type="number" id="min" value="1" placeholder="최소">
+        <span>~</span>
+        <input type="number" id="max" value="100" placeholder="최대">
+    </div>
+    <button onclick="pickNumber()">번호 추출!</button>
+    <div id="result">?</div>
+</div>
+
+<script>
+    function pickNumber() {
+        const min = parseInt(document.getElementById('min').value);
+        const max = parseInt(document.getElementById('max').value);
+        const resultDiv = document.getElementById('result');
+
+        if (isNaN(min) || isNaN(max) || min >= max) {
+            alert("올바른 범위를 입력해주세요.");
+            return;
+        }
+
+        // 간단한 애니메이션 효과
+        let count = 0;
+        const interval = setInterval(() => {
+            resultDiv.innerText = Math.floor(Math.random() * (max - min + 1)) + min;
+            count++;
+            if (count > 10) {
+                clearInterval(interval);
+                const finalNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+                resultDiv.innerText = finalNumber;
+            }
+        }, 50);
+    }
+</script>
+
+</body>
+</html>
